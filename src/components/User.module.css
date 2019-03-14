@@ -1,0 +1,12 @@
+.userContainer {
+    display: block;
+    border: 1px solid black;
+    border-radius: 8px;
+    padding: 8px;
+    margin: 8px;
+}
+
+.userContainerSelected {
+    composes: userContainer;
+    background-color: paleturquoise;
+}

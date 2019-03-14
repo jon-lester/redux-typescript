@@ -1,0 +1,36 @@
+.appLayoutFrame {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-flow: column nowrap;
+}
+
+.appLayoutHeroBar {
+    height: 60px;
+}
+
+.appLayoutContentArea {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-flow: row nowrap;
+}
+
+.appLayoutSidebar {
+    overflow: hidden;
+    border-right: 1px solid lightgray;
+    width: 350px;
+    margin-left: -300px;
+    transition: margin 0.15s ease-in;
+}
+
+.appLayoutSidebar:hover {
+    margin-left: 0;
+    transition: margin 0.15s ease-out;
+}
+
+.appLayoutContent {
+    width: 100%;
+    min-height: 0;
+    overflow: scroll;
+}

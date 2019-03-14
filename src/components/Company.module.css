@@ -1,0 +1,7 @@
+.testContainer {
+
+}
+
+.companyContainer {
+    composes: testContainer;
+}
