@@ -1,12 +1,32 @@
 .userContainer {
     display: block;
-    border: 1px solid black;
+    position: relative;
+    border: 1px solid #ddd;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.15);
     border-radius: 8px;
     padding: 8px;
-    margin: 8px;
+    margin: 16px;
+    width: 300px;
+    background-color: #fff;
+    transition: all 0.15s ease-out;
+    cursor: pointer;
 }
 
 .userContainerSelected {
     composes: userContainer;
-    background-color: paleturquoise;
+    border: 1px solid green;
+    transform: scale(1.05);
+}
+
+.userContainer > h4 {
+    margin: 0;
+}
+
+.userContainer > p {
+    font-size: 0.8rem;
+}
+
+.userContainer > button {
+    position: absolute;
+    right: 10px;
 }

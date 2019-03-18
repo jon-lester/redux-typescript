@@ -13,7 +13,7 @@ export const appSystemReducer = (
         case LOGIN_USER:
             return {
                 ...previousState,
-                userName: action.name
+                userName: action.userName
             }
         case LOGOUT:
             return {

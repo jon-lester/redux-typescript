@@ -16,12 +16,13 @@ interface IUserProps {
 class User extends React.Component<IUserProps> {
     public render() {
         return (
-            <div className={this.props.selected ? classes.userContainerSelected : classes.userContainer}>
+            <div
+                onClick={this.selectUser(this.props.user)}
+                className={this.props.selected ? classes.userContainerSelected : classes.userContainer}>
+                <button onClick={this.deleteUser(this.props.user)}>X</button>
                 <h4>{this.props.user.name}</h4>
                 <p>{this.props.user.email}</p>
                 <Company company={this.props.user.company} />
-                <button onClick={this.selectUser(this.props.user)}>Select</button>
-                <button onClick={this.deleteUser(this.props.user)}>Delete</button>
             </div>
         );
     }

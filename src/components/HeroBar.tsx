@@ -6,6 +6,7 @@ interface IHeroBarProps {
     onLogin: () => void;
     onLogout: () => void;
     userName: string | null;
+    companyName: string;
 }
 
 class HeroBar extends React.Component<IHeroBarProps> {
@@ -14,7 +15,7 @@ class HeroBar extends React.Component<IHeroBarProps> {
             <div className={styles.heroBar}>
                 <div className={styles.heroBarTextContent}>
                     <span className={styles.heroBarTitle}>
-                        Redux Test Inc.
+                        {this.props.companyName}
                     </span>
                     <span className={styles.heroBarSubtitle}>
                         {this.props.userName ? `Logged in as ${this.props.userName}` : 'Logged out'}

@@ -1,45 +1,49 @@
 import React, { Component } from 'react';
-import './App.css';
-import getUsers from './Api';
+import { connect } from 'react-redux';
+
 import UserList from './components/UserList';
-import IUser from './model/IUser';
 import AppLayout from './components/AppLayout';
 import SideNav from './components/SideNav';
 import HeroBar from './components/HeroBar';
 
-interface IAppState {
-    users: IUser[];
-    selectedUser: IUser | null;
-    loaded: boolean;
-    userName: string | null;
+import getUsers from './Api';
+import IUser from './model/IUser';
+import { AppState } from './store';
+import { loadUserData, selectUser, endLoad, deleteUser, logout, loginUser } from './store/actionCreators';
+
+import './App.css';
+
+interface IAppProps {
+    companyName: string;
 }
 
-class App extends Component<{}, IAppState> {
+const dispatchMap = {
+    selectUser,
+    deleteUser,
+    loadUserData,
+    endLoad,
+    logout,
+    loginUser
+}
 
-    constructor(props: {}) {
-        super(props);
-
-        this.state = {
-            selectedUser: null,
-            users: [],
-            loaded: false,
-            userName: null,
-        }
-    }
+class App extends Component<IAppProps & AppState & typeof dispatchMap> {
 
     componentDidMount() {
-        getUsers().then(users => this.setState({
-            users,
-            loaded: true
-        }));
+        getUsers().then(users => {
+            this.setState({
+                users,
+                loaded: true
+            });
+            this.props.loadUserData(users);
+            this.props.endLoad();
+        });
     }
 
     render() {
-
-        const content = () => this.state.loaded ?
+        const content = () => this.props.appSystem.loaded ?
             <UserList
-                selectedUser={this.state.selectedUser}
-                users={this.state.users}
+                selectedUser={this.props.appData.selectedUser}
+                users={this.props.appData.users}
                 onSelectUser={this.onSelectUser}
                 onDeleteUser={this.onDeleteUser}
             /> :
@@ -48,7 +52,8 @@ class App extends Component<{}, IAppState> {
         const navigation = () => <SideNav />
 
         const heroBar = () => <HeroBar
-            userName={this.state.userName}
+            companyName={this.props.companyName}
+            userName={this.props.appSystem.userName}
             onLogin={this.onLogin}
             onLogout={this.onLogout}
         />
@@ -59,33 +64,25 @@ class App extends Component<{}, IAppState> {
     }
 
     private readonly onSelectUser = (user: IUser) => {
-        this.setState({
-            selectedUser: user
-        });
+        this.props.selectUser(user);
     }
 
     private readonly onDeleteUser = (user: IUser) => {
-        this.setState((prevState: IAppState) => ({
-            users: prevState.users.filter(u => u.id !== user.id),
-            selectedUser: prevState.selectedUser
-                ? prevState.selectedUser.id !== user.id
-                    ? prevState.selectedUser
-                    : null
-                : null
-        }));
+        this.props.deleteUser(user.id);
     }
 
     private readonly onLogout = () => {
-        this.setState({
-            userName: null
-        });
+        this.props.logout();
     }
 
     private readonly onLogin = () => {
-        this.setState({
-            userName: this.state.selectedUser && this.state.selectedUser.name
-        });
+        this.props.loginUser(this.props.appData.selectedUser ? this.props.appData.selectedUser.name : '[No user selected]');
     }
 }
 
-export default App;
+export default connect(
+    // mapStateToProps
+    (state: AppState) => state,
+    // mapDispatchToProps
+    dispatchMap
+)(App);

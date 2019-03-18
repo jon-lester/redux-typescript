@@ -1,16 +1,21 @@
+// action-creators for all supported actions
+
+import IUser from "../model/IUser";
+
 import { SELECT_USER, DELETE_USER, LOAD_USER_DATA } from "./appDataTypes";
 import { LOGIN_USER, LOGOUT, BEGIN_LOAD, END_LOAD } from "./appSystemTypes";
 
-export const fetchUserData = () => {
+export const loadUserData = (users: IUser[]) => {
     return {
-        type: LOAD_USER_DATA
+        type: LOAD_USER_DATA,
+        users
     };
 }
 
-export const selectUser = (id: number) => {
+export const selectUser = (user: IUser) => {
     return {
         type: SELECT_USER,
-        id
+        user
     };
 }
 

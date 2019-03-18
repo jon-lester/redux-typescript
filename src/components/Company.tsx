@@ -12,7 +12,7 @@ class Company extends React.Component<ICompanyProps> {
     public render() {
         return (
             <div className={styles.companyContainer}>
-                <h6>{this.props.company.name}</h6>
+                <h5>{this.props.company.name}</h5>
                 <p>{this.props.company.catchPhrase}</p>
             </div>
         );

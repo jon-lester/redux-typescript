@@ -1,11 +1,12 @@
 .heroBar {
     display: flex;
+    position: relative;
+    z-index: 10;
     flex-flow: row nowrap;
     align-items: center;
     height: 100%;
     width: 100%;
-    background-color: lightgray;
-    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.25);
+    box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.25);
 }
 
 .heroBarTextContent {

@@ -1,7 +1,6 @@
-.testContainer {
-
+.companyContainer {
 }
 
-.companyContainer {
-    composes: testContainer;
+.companyContainer > p {
+    font-size: 0.8rem;
 }

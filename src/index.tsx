@@ -11,7 +11,7 @@ const store = createStore(rootReducer);
 
 ReactDOM.render(
     <Provider store={store}>
-        <App />
+        <App companyName="Redux Test Inc" />
     </Provider>,
     document.getElementById('root')
 );

@@ -10,7 +10,7 @@ export const END_LOAD = 'END_LOAD';
 
 export interface ILoginUserAction {
     type: typeof LOGIN_USER;
-    name: string;
+    userName: string;
 }
 
 export interface ILogoutAction {
