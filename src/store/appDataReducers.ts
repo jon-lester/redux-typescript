@@ -3,7 +3,8 @@ import {
     AppDataActionTypes,
     LOAD_USER_DATA,
     SELECT_USER,
-    DELETE_USER } from "./appDataTypes";
+    DELETE_USER, 
+    CLEAR_USER_SELECTION} from "./appDataTypes";
 
 // the initial state of the app data slice for when
 // the previousState is undefined (ie. at startup)
@@ -32,6 +33,11 @@ export const appDataReducer = (
                     ...previousState,
                     selectedUser: action.user
                 };
+            case CLEAR_USER_SELECTION:
+                return {
+                    ...previousState,
+                    selectedUser: null
+                }
             case DELETE_USER:
                 return {
                     ...previousState,

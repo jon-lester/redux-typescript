@@ -9,11 +9,13 @@ import { AppState, AppActionTypes } from ".";
 
 import {
     SELECT_USER,
+    CLEAR_USER_SELECTION,
     DELETE_USER,
     LOAD_USER_DATA,
     ILoadUserDataAction,
     IDeleteUserAction,
-    ISelectUserAction } from "./appDataTypes";
+    ISelectUserAction, 
+    IClearUserSelectionAction} from "./appDataTypes";
 
 import {
     LOGIN_USER,
@@ -27,6 +29,7 @@ import {
 
 import getUsers from "../Api";
 
+// asynchronously load user data and populate the ui with it
 export const refreshUserData: ActionCreator<ThunkAction<Promise<ILoadUserDataAction>, AppState, undefined, AppActionTypes>> =
     () =>
     dispatch => {
@@ -37,6 +40,7 @@ export const refreshUserData: ActionCreator<ThunkAction<Promise<ILoadUserDataAct
         });
     }
 
+// populate the ui with user data
 export const loadUserData: ActionCreator<ILoadUserDataAction> = (users: IUser[]) => {
     return ({
         type: LOAD_USER_DATA,
@@ -44,6 +48,7 @@ export const loadUserData: ActionCreator<ILoadUserDataAction> = (users: IUser[])
     });
 }
 
+// select a given user
 export const selectUser: ActionCreator<ISelectUserAction> = (user: IUser) => {
     return {
         type: SELECT_USER,
@@ -51,6 +56,14 @@ export const selectUser: ActionCreator<ISelectUserAction> = (user: IUser) => {
     };
 }
 
+// clear any user selection
+export const clearUserSelection: ActionCreator<IClearUserSelectionAction> = () => {
+    return {
+        type: CLEAR_USER_SELECTION
+    }
+}
+
+// delete a given user from state
 export const deleteUser: ActionCreator<IDeleteUserAction> = (id: number) => {
     return {
         type: DELETE_USER,
@@ -58,6 +71,8 @@ export const deleteUser: ActionCreator<IDeleteUserAction> = (id: number) => {
     };
 }
 
+// delete a given user from state, first making
+// sure that the user is logged out
 export const deleteUserAndVerifyLoggedOut:
     ActionCreator<ThunkAction<IDeleteUserAction, AppState, undefined, AppActionTypes>> =
     (id: number) =>
@@ -69,7 +84,7 @@ export const deleteUserAndVerifyLoggedOut:
         let deletedUser;
 
         // try to locate the user with the given id
-        // this should never fail
+        // (this should never fail)
         if (candidateUsersWithId.length === 1) {
             deletedUser = candidateUsersWithId[0];
         }
@@ -89,6 +104,8 @@ export const deleteUserAndVerifyLoggedOut:
         });
     }
 
+// log in a user by username (passing in the name
+// as a string just to be difficult)
 export const loginUser: ActionCreator<ILoginUserAction> = (userName: string) => {
     return {
         type: LOGIN_USER,
@@ -96,18 +113,21 @@ export const loginUser: ActionCreator<ILoginUserAction> = (userName: string) => 
     };
 }
 
+// log out any logged-in user
 export const logout: ActionCreator<ILogoutAction> = () => {
     return {
         type: LOGOUT
     };
 }
 
+// show the loading message, replacing the user grid
 export const beginLoad: ActionCreator<IBeginLoadAction> = () => {
     return {
         type: BEGIN_LOAD
     }
 }
 
+// hide the loading message, allowing display of the user grid
 export const endLoad: ActionCreator<IEndLoadAction> = () => {
     return {
         type: END_LOAD

@@ -14,11 +14,11 @@ export interface IAppDataState {
 
 export const LOAD_USER_DATA = 'FETCH_USER_DATA';
 export const SELECT_USER = 'SELECT_USER';
+export const CLEAR_USER_SELECTION = 'CLEAR_USER_SELECTION';
 export const DELETE_USER = 'DELETE_USER';
 
-// note use of typeof for the type property, allowing
-// it to be type-checked against the types of the above
-// as opposed to the string values
+// note use of typeof for the generic, allowing type-checking
+// against the /types/ of the above as opposed to the string values
 
 export interface ILoadUserDataAction extends Action<typeof LOAD_USER_DATA> {
     users: IUser[];
@@ -26,6 +26,9 @@ export interface ILoadUserDataAction extends Action<typeof LOAD_USER_DATA> {
 
 export interface ISelectUserAction extends Action<typeof SELECT_USER> {
     user: IUser;
+}
+
+export interface IClearUserSelectionAction extends Action<typeof CLEAR_USER_SELECTION> {
 }
 
 export interface IDeleteUserAction extends Action<typeof DELETE_USER> {
@@ -38,4 +41,5 @@ export interface IDeleteUserAction extends Action<typeof DELETE_USER> {
 export type AppDataActionTypes =
     ILoadUserDataAction |
     ISelectUserAction |
+    IClearUserSelectionAction |
     IDeleteUserAction;

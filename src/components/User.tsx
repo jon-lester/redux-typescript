@@ -8,7 +8,7 @@ import classes from './User.module.css';
 
 interface IUserProps {
     user: IUser;
-    onSelectUser: (user: IUser) => void;
+    onClickUser: (user: IUser) => void;
     onDeleteUser: (user: IUser) => void;
     selected: boolean;
 }
@@ -17,9 +17,9 @@ class User extends React.Component<IUserProps> {
     public render() {
         return (
             <div
-                onClick={this.selectUser(this.props.user)}
+                onClick={this.onClickUser(this.props.user)}
                 className={this.props.selected ? classes.userContainerSelected : classes.userContainer}>
-                <button onClick={this.deleteUser(this.props.user)}>X</button>
+                <button onClick={this.onDeleteUser(this.props.user)}>X</button>
                 <h4>{this.props.user.name}</h4>
                 <p>{this.props.user.email}</p>
                 <Company company={this.props.user.company} />
@@ -27,11 +27,11 @@ class User extends React.Component<IUserProps> {
         );
     }
 
-    private readonly selectUser = (user: IUser) => () => {
-        this.props.onSelectUser(user);
+    private readonly onClickUser = (user: IUser) => () => {
+        this.props.onClickUser(user);
     }
 
-    private readonly deleteUser = (user: IUser) => (event: React.SyntheticEvent<HTMLButtonElement>) => {
+    private readonly onDeleteUser = (user: IUser) => (event: React.SyntheticEvent<HTMLButtonElement>) => {
         event.stopPropagation();
         this.props.onDeleteUser(user);
     }
