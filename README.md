@@ -1,14 +1,14 @@
-## Redux test app
+# Redux test app
 
-### Rationale
+## Rationale
 
 Write a very basic app, and get to know Redux a little better.
 
 Secondary objective - investigate other React CSS techniques. (A lot of my recent work has been with JSS in the Material-UI framework, so I wanted to try something different!)
 
-### Implementation
+## Implementation
 
-#### Stage 1 - Getting it up and running
+### Stage 1 - Getting it up and running
 
 This not very beautiful app shows a list of people (loaded from https://jsonplaceholder.typicode.com/) and allows some limited interaction with the list.
 
@@ -30,11 +30,13 @@ There are some additional system actions which affect state:
 I therefore had seven action/reducer pairs to account for as below, which I've chosen to split into two state slices - Data and System.
 
 Data:
+
 - Load the people list (State - a people array)
 - Select a person (State - a selected-person property)
 - Delete a person (No associated state, but updates the above array)
 
 System:
+
 - Pretend to log in (State - a logged-in-user name)
 - Log out (Updates the above user name state)
 - Turn on the loading message (State - a 'loading' boolean)
@@ -63,25 +65,17 @@ In stage 1, API access is done in `componentDidMount()` on `App.tsx`, and the ap
 
 At this point, although I've added the react-redux-starter package to the project, I'm purposely avoiding using any shortcuts it provides so that I can better understand the nuts and bolts of setting up the actions and reducers and the store.
 
-### The First Challenge!
-
-Nearing the end of stage 1 I ran into a problem. If I'm logged in as a given user, but then delete the user, I need to immediately log out. However - users are managed in my Data slice, but the login state is managed in my System slice. I therefore needed to somehow cause the Data reducer's `DELETE_USER` action to also dispatch an action to the System reducer (or so I thought).
-
-This StackOverflow post provided two possible solutions: https://stackoverflow.com/questions/40900354/updating-state-managed-by-another-reducer
-
-- Modify the System reducer to also respond to the DELETE_USER action and update the System data store accordingly.
-- Use a thunk to bind the two actions together into a new function-action, and call that instead.
-- (Or a third option, which would be to assume a design error in the way the stores are split, and move the appropriate state to facilitate this case, however I'd prefer to keep login details in the System store, and I'd also prefer to solve this another way as this could be a legitimate requirement in a real app.)
-
-
-
-### Type Safety
+#### Type Safety
 
 An objective of this test app was to attempt to leverage TypeScript for type-safety for all state, reducers, actions, and so on. This turned out to be easier than expected - a link on the Redux site gave a huge headstart on setting up the types correctly: https://redux.js.org/recipes/usage-with-typescript
 
-#### Type-safety for dispatch functions
+However - I later found out that the guide is not the whole story by any means - Redux provides various types to apply to its common structures, such as `Action<TypeOfAdditionalPayload>`, and `ActionCreator<ActionType>`. I highly recommend reading Redux's `index.d.ts` file to see what's there.
 
-I ran into one minor annoyance while following the above guide, which is that it was necessary to manually add the dispatch functions to the container component's props for them to be recognised by the type system and intellisense. This made it necessary to update the list of dispatch functions in two places - once inline with the `connect()` call, and once for the app's props interface. (Or technically three, but I'm not counting the import statements!)
+(To be fair, inference was doing a great job without explicit type definitions for many of the store's artifacts, which is likely the aim of the above guide, but it's worth knowing how things are defined either way.)
+
+#### Type-safety for the dispatch map
+
+I ran into one minor annoyance while following the above guide, which is that it was necessary to manually add the dispatch functions to the container component's props for them to be recognised by the type system and intellisense. This made it necessary to update the list of dispatch functions in two places - once inline with the `connect()` HOC, and once for the app's props interface.
 
 I got around this by moving the dispatch map out of the `connect()` call and into a constant:
 
@@ -104,16 +98,32 @@ I could then union the dispatchMap object's type with the React component's prop
         // ...etc
     }
 
-All that then remains is to pass the now-separated dispatch map into the `connect()` HOC:
+All that then remains is to pass the now-separated dispatch map into `connect()`:
 
     export default connect(
         (state: AppState) => state,
         dispatchMap
     )(App);
 
-### CSS
+However - this technique quickly became obsolete as I began integrating and applying types to my `redux-thunk` code - see stage 2.
 
-I gave CSS modules (https://github.com/css-modules/css-modules) a go with this test app, as Create-React-App has support out of the box.
+#### The First Challenge
+
+Nearing the end of stage 1 I ran into a problem. If I'm logged in as a given user, but then delete the user, I need to immediately log that user out. However - users are managed in my Data slice, but the login state is managed in my System slice. I therefore needed to somehow cause the Data reducer's `DELETE_USER` action to also dispatch an action to the System reducer.
+
+This StackOverflow post provided two possible solutions: https://stackoverflow.com/questions/40900354/updating-state-managed-by-another-reducer
+
+1. Modify the System reducer to also respond to the `DELETE_USER` action and update the System data store accordingly. I didn't like the idea of mixing my slice reducers to achieve this, but it was an option. It occurred to me that I could add a third reducer with access to the entire state for cross-cutting concerns, but that still wouldn't have been ideal.
+
+2. Use `redux-thunk` to bind the two actions together into a new thunk-action, and call that instead. This seemed promising, and is a common way of dealing with side-effects in Redux (and of dealing with asynchronous actions, which I also needed to make use of later).
+
+3. Or a potential third option, which would be to assume a design error in the way the stores are split, and move the appropriate state to facilitate this case. However - I was erring on the side of keeping the two slices separate for the purposes of this test project, as cross-slice concerns could quite easily be a legitimate requirement in a production app.
+
+I decided to give `redux-thunk` a go.
+
+## CSS Modules
+
+I gave CSS modules (https://github.com/css-modules/css-modules) a go with this test app, as Create-React-App has support out-of-the-box.
 
 Thoughts:
 

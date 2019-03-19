@@ -1,15 +1,22 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { ThunkDispatch } from 'redux-thunk';
 
 import UserList from './components/UserList';
 import AppLayout from './components/AppLayout';
 import SideNav from './components/SideNav';
 import HeroBar from './components/HeroBar';
 
-import getUsers from './Api';
 import IUser from './model/IUser';
+
 import { AppState } from './store';
-import { loadUserData, selectUser, endLoad, deleteUser, logout, loginUser } from './store/actionCreators';
+import {
+    refreshUserData,
+    selectUser,
+    endLoad,
+    logout,
+    loginUser,
+    deleteUserAndVerifyLoggedOut } from './store/actionCreators';
 
 import './App.css';
 
@@ -17,26 +24,19 @@ interface IAppProps {
     companyName: string;
 }
 
-const dispatchMap = {
-    selectUser,
-    deleteUser,
-    loadUserData,
-    endLoad,
-    logout,
-    loginUser
-}
+const dispatchMap = (dispatch: ThunkDispatch<AppState, any, any>) => ({
+    refreshUserData: () => dispatch(refreshUserData()),
+    selectUser: (user: IUser) => dispatch(selectUser(user)),
+    endLoad: () => dispatch(endLoad()),
+    logout: () => dispatch(logout()),
+    loginUser: (userName: string) => dispatch(loginUser(userName)),
+    deleteUserAndVerifyLoggedOut: (id: number) => dispatch(deleteUserAndVerifyLoggedOut(id))
+})
 
-class App extends Component<IAppProps & AppState & typeof dispatchMap> {
+class App extends Component<IAppProps & AppState & ReturnType<typeof dispatchMap>> {
 
     componentDidMount() {
-        getUsers().then(users => {
-            this.setState({
-                users,
-                loaded: true
-            });
-            this.props.loadUserData(users);
-            this.props.endLoad();
-        });
+        this.props.refreshUserData();
     }
 
     render() {
@@ -68,7 +68,7 @@ class App extends Component<IAppProps & AppState & typeof dispatchMap> {
     }
 
     private readonly onDeleteUser = (user: IUser) => {
-        this.props.deleteUser(user.id);
+        this.props.deleteUserAndVerifyLoggedOut(user.id);
     }
 
     private readonly onLogout = () => {

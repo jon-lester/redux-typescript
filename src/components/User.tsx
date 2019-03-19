@@ -31,7 +31,8 @@ class User extends React.Component<IUserProps> {
         this.props.onSelectUser(user);
     }
 
-    private readonly deleteUser = (user: IUser) => () => {
+    private readonly deleteUser = (user: IUser) => (event: React.SyntheticEvent<HTMLButtonElement>) => {
+        event.stopPropagation();
         this.props.onDeleteUser(user);
     }
 }

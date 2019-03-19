@@ -1,4 +1,10 @@
-import { IAppSystemState, AppSystemActionTypes, LOGIN_USER, LOGOUT, BEGIN_LOAD, END_LOAD } from "./appSystemTypes";
+import {
+    IAppSystemState,
+    AppSystemActionTypes,
+    LOGIN_USER,
+    LOGOUT,
+    BEGIN_LOAD,
+    END_LOAD } from "./appSystemTypes";
 
 const initialState: IAppSystemState = {
     loaded: false,

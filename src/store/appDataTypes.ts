@@ -1,3 +1,5 @@
+import { Action } from "redux";
+
 import IUser from "../model/IUser";
 
 // the shape of the app data slice. this slice represents the data
@@ -18,18 +20,15 @@ export const DELETE_USER = 'DELETE_USER';
 // it to be type-checked against the types of the above
 // as opposed to the string values
 
-export interface ILoadUserDataAction {
-    type: typeof LOAD_USER_DATA;
+export interface ILoadUserDataAction extends Action<typeof LOAD_USER_DATA> {
     users: IUser[];
 }
 
-export interface ISelectUserAction {
-    type: typeof SELECT_USER;
+export interface ISelectUserAction extends Action<typeof SELECT_USER> {
     user: IUser;
 }
 
-export interface IDeleteUserAction {
-    type: typeof DELETE_USER;
+export interface IDeleteUserAction extends Action<typeof DELETE_USER> {
     id: number;
 }
 
