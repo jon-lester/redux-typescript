@@ -28,9 +28,15 @@ interface IAppProps {
     companyName: string;
 }
 
-// maps component props to action-creators -
-// passed to the connect HOC below, and also
-// used to type the component props
+// maps component props to action-creators - passed to the connect HOC below,
+// and also  used to type the component props
+
+// TypeScript notes - it doesn't seem possible to use the simple map type (ie.
+// a map containing actionReducers as opposed to a map containing dispatch
+// functions as below) and have typing working correctly. Also - the last
+// generic arg to ThunkDispatch /must/ be 'any' for typing to work. Maybe
+// there's a better way of doing this..?
+
 const dispatchMap = (dispatch: ThunkDispatch<AppState, any, any>) => ({
     refreshUserData: () => dispatch(refreshUserData()),
     selectUser: (user: IUser) => dispatch(selectUser(user)),
