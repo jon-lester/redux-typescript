@@ -10,7 +10,7 @@ Secondary objective - investigate other React CSS techniques. (A lot of my recen
 
 ### Stage 1 - Getting up and running with Redux
 
-This not very beautiful app shows a list of people (loaded from https://jsonplaceholder.typicode.com/) and allows some limited interaction with the list.
+This not very beautiful app shows a list of people (from [JSONPlaceholder](https://jsonplaceholder.typicode.com/)) and allows some limited interaction with the list.
 
 I wrote the initial version to store all application state in `App.tsx` as standard React state, then went on to refactor it to use redux.
 
@@ -67,7 +67,7 @@ At this point, although I've added the react-redux-starter package to the projec
 
 #### Type Safety
 
-An objective of this test app was to attempt to leverage TypeScript type-safety as far as possible. This turned out to be easier than expected - a link on the Redux site gives a huge headstart on setting up the types correctly: https://redux.js.org/recipes/usage-with-typescript
+An objective of this test app was to attempt to leverage TypeScript type-safety as far as possible. This turned out to be easier than expected - [a page from the Redux documentation](https://redux.js.org/recipes/usage-with-typescript) gives a huge headstart on setting up the types correctly.
 
 However - I later found out that the guide is not the whole story - Redux provides various types to apply to its common structures such as `Action<TypeOfActionProperties>`, and `ActionCreator<TypeOfAction>`. I highly recommend reading Redux's `index.d.ts` file to see what's there.
 
@@ -111,7 +111,7 @@ However - this technique quickly became obsolete as I began integrating and appl
 
 Nearing the end of stage 1 I ran into a problem. If I'm logged in as a given user, but then delete the user, I need to immediately log that user out. However - users are managed in my Data slice, but the login state is managed in my System slice. I therefore needed to somehow cause the Data reducer's `DELETE_USER` action to also dispatch an action to the System reducer.
 
-This StackOverflow post provided two possible solutions: https://stackoverflow.com/questions/40900354/updating-state-managed-by-another-reducer
+[This StackOverflow post](https://stackoverflow.com/questions/40900354/updating-state-managed-by-another-reducer) provided two possible solutions:
 
 1. Modify the System reducer to also respond to the `DELETE_USER` action and update the System data store accordingly. I didn't like the idea of mixing my slice reducers to achieve this, but it was an option. It occurred to me that I could add a third reducer with access to the entire state for cross-cutting concerns, but that still wouldn't have been ideal.
 
@@ -131,13 +131,13 @@ Additionally, the basic redux pattern with segregated state slices doesn't expli
 
 Enter `redux-thunk`. By default redux works with action creators which return action objects, which are then passed to one or more reducers. Thunk allows action creators to return functions to be executed, which have access to a `dispatch()` parameter for dispatching other actions, and a `getState()` parameter to provide access to the full store state. These functions can also return a promise, allowing asynchronous calls which will update the redux store as they resolve.
 
-I found this article to be very useful when getting my head around this topic initially!: https://daveceddia.com/what-is-a-thunk/
+I found [this article by Dave Ceddia](https://daveceddia.com/what-is-a-thunk/) to be very useful when getting my head around this topic initially.
 
 #### Type-Safety
 
 Applying TypeScript type-safety to `redux-thunk` was something of a challenge initially - the type documentation isn't expansive, and it's left up to the community to provide worked examples, which are somewhat thin on the ground.
 
-However, after a few hours' research on StackOverflow and various technical blogs I arrived at a configuration which worked well. The problem I was running into was in convincing TypeScript that the component wrapped in `connect()` had props of the correct type to be passed to the HOC. The key for me was to replace the shorthand dispatch map that I'd used in stage 1 with a correctly-typed function-form map - see https://react-redux.js.org/using-react-redux/connect-mapdispatch#two-forms-of-mapdispatchtoprops for details on the two map forms, and also see my notes in the source (it's necessary to use `any` as the action type when typing the map).
+However, after a few hours' research on StackOverflow and various technical blogs I arrived at a configuration which worked well. The problem I was running into was in convincing TypeScript that the component wrapped in `connect()` had props of the correct type to be passed to the HOC. The key for me was to replace the shorthand dispatch map that I'd used in stage 1 with a correctly-typed function-form map - see [this documentation page](https://react-redux.js.org/using-react-redux/connect-mapdispatch#two-forms-of-mapdispatchtoprops) for details on the two map forms, and also see my notes in the source (it's necessary to use `any` as the action type when typing the map).
 
 This immediately obsoleted my previous solution for typing the dispatch map, as it was now a function which returned an object instead of an object, but this was easily solved by making use of TypeScript's `ReturnType<T>` type, as follows:
 
@@ -214,19 +214,19 @@ In summary, thunks seem a powerful addition to redux, expanding the toolkit to c
 
 ## CSS Modules
 
-I gave CSS modules (https://github.com/css-modules/css-modules) a go with this test app, as Create-React-App has support out-of-the-box.
+I gave [CSS modules](https://github.com/css-modules/css-modules) a go with this test app, as Create-React-App has support out-of-the-box.
 
 Thoughts:
 
 - The scoped approach is a nice thing and akin to JSS, in that unique class names are generated at build time, so there's no need to manage potential name clashes across different components and/or modules. (Although global properties are supported if needed.)
 
-- In order to be compatible with TSX/JSX code, the class names must be camelCase, so it's not possible to use eg. BEM naming (http://getbem.com/introduction/). It felt a bit odd to have to go without hyphens and underscores while working in 'plain' .css files, but it's a sacrifice worth making given the scoped approach and other benefits.
+- In order to be compatible with TSX/JSX code, the class names must be camelCase, so it's not possible to use eg. [BEM naming](http://getbem.com/introduction/). It felt a bit odd to have to go without hyphens and underscores while working in 'plain' .css files, but it's a sacrifice worth making given the scoped approach and other benefits.
 
 - The composing feature is welcome, and a lot of the reason why I wanted something more than regular CSS. CSS modules allows you to extend class definitions from the same file, other files, or from global definitions as well.
 
-- On the downside, CSS module imports lack type-safety in Create-React-App, as typings aren't generated by the default configuration (and this is unlikely to change, see https://github.com/facebook/create-react-app/issues/5677).
+- On the downside, CSS module imports lack type-safety in Create-React-App, as typings aren't generated by the default configuration (and [this is unlikely to change](https://github.com/facebook/create-react-app/issues/5677)).
 
-- However - at least one VS Code plugin supports intellisense for class names - https://marketplace.visualstudio.com/items?itemName=clinyong.vscode-css-modules
+- However - [at least one](https://marketplace.visualstudio.com/items?itemName=clinyong.vscode-css-modules) VS Code plugin supports intellisense for class names.
 
 - Interestingly, the above plugin seems to support conversion of kebab-case in the CSS file to camelCase in its intellisense. A quick test in a CRA project without any special configuration shows that this translation doesn't also take place at build time (ie. kebab-case properties in the CSS are not successfully associated with camelCase properties used in the TSX component), however it does indicate that there may be a way to achieve that!
 
