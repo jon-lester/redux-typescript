@@ -45,7 +45,7 @@ const dispatchMap = (dispatch: ThunkDispatch<AppState, any, any>) => ({
     logout: () => dispatch(logout()),
     loginUser: (userName: string) => dispatch(loginUser(userName)),
     deleteUserAndVerifyLoggedOut: (id: number) => dispatch(deleteUserAndVerifyLoggedOut(id))
-})
+});
 
 // note the props-type is the union of the component's own props,
 // the redux store shape, and all props defined in the dispatchMap
